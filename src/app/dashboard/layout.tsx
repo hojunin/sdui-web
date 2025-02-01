@@ -1,6 +1,6 @@
-import { AppLayout } from '@/components/layouts/app-layout';
-import { Suspense } from 'react';
-import { AppLayoutSkeleton } from '@/components/layouts/app-layout-skeleton';
+import { AppLayout } from "@/components/layouts/app-layout";
+import { AppLayoutSkeleton } from "@/components/layouts/app-layout-skeleton";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -12,8 +12,8 @@ export default function DashboardLayout({
       <AppLayout
         breadcrumbs={{
           items: [
-            { href: '#', label: 'Building Your Application' },
-            { label: 'Data Fetching' },
+            { href: "/dashboard", label: "대시보드" },
+            { label: "데이터" },
           ],
         }}
       >

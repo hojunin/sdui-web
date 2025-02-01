@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { AppSidebar } from '@/components/dashboard/app-sidebar';
-import { Separator } from '@/components/ui/separator';
-import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from "@/components/dashboard/app-sidebar";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,10 +10,10 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { useRouter } from 'next/navigation';
-import { Fragment, useEffect } from 'react';
-import { isAuthenticated } from '@/lib/auth';
+} from "@/components/ui/breadcrumb";
+import { useRouter } from "next/navigation";
+import { Fragment, useEffect } from "react";
+import { isAuthenticated } from "@/lib/auth";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ export function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/login');
+      router.push("/auth/login");
     }
   }, [router]);
 
