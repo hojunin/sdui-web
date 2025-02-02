@@ -43,7 +43,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
@@ -51,9 +51,3 @@ export function AppSidebar() {
 }
 
 const teams = ["Musinsa", "Musinsa Global", "29CM", "SLDT", "EMPTY"];
-
-const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  avatar: "https://via.placeholder.com/150",
-};
