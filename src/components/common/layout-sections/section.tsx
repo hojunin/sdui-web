@@ -2,6 +2,7 @@
 
 import { GetLayoutByPathQuery } from "@/lib/graphql/__generated__/graphql";
 import { cn } from "@/lib/utils";
+import { ChevronDownIcon } from "lucide-react";
 import React, { forwardRef, useState } from "react";
 
 interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -21,10 +22,16 @@ const Section = forwardRef<HTMLDivElement, SectionProps>(
       >
         <div className="flex items-center justify-between w-full">
           <button
-            className="flex justify-start w-full bg-gray-200"
+            className="flex justify-between w-full bg-gray-100 px-4 py-2 rounded-t-md items-center"
             onClick={() => setIsExpanded(!isExpanded)}
           >
             <h2 className="text-2xl font-semibold">{section.name}</h2>
+            <ChevronDownIcon
+              className={cn(
+                "w-6 h-6 transition-all duration-300",
+                isExpanded ? "rotate-180" : "rotate-0"
+              )}
+            />
           </button>
         </div>
         <div

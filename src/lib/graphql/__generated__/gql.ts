@@ -15,11 +15,13 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n  query GetMenus {\n    menus {\n      id\n      label\n      path\n      order\n      depth\n      children {\n        id\n        label\n        path\n        order\n        children {\n          id\n          label\n          path\n          order\n        }\n      }\n    }\n  }\n": typeof types.GetMenusDocument,
-    "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      sections {\n        name\n        order\n        type\n        children\n      }\n      path\n      revision\n    }\n  }\n": typeof types.GetLayoutByPathDocument,
+    "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n": typeof types.GetLayoutByPathDocument,
+    "\n  query GetLayoutHistory($path: String!) {\n    layoutHistory(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n": typeof types.GetLayoutHistoryDocument,
 };
 const documents: Documents = {
     "\n  query GetMenus {\n    menus {\n      id\n      label\n      path\n      order\n      depth\n      children {\n        id\n        label\n        path\n        order\n        children {\n          id\n          label\n          path\n          order\n        }\n      }\n    }\n  }\n": types.GetMenusDocument,
-    "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      sections {\n        name\n        order\n        type\n        children\n      }\n      path\n      revision\n    }\n  }\n": types.GetLayoutByPathDocument,
+    "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n": types.GetLayoutByPathDocument,
+    "\n  query GetLayoutHistory($path: String!) {\n    layoutHistory(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n": types.GetLayoutHistoryDocument,
 };
 
 /**
@@ -43,7 +45,11 @@ export function gql(source: "\n  query GetMenus {\n    menus {\n      id\n      
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      sections {\n        name\n        order\n        type\n        children\n      }\n      path\n      revision\n    }\n  }\n"): (typeof documents)["\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      sections {\n        name\n        order\n        type\n        children\n      }\n      path\n      revision\n    }\n  }\n"];
+export function gql(source: "\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetLayoutByPath($path: String!) {\n    layoutByPath(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetLayoutHistory($path: String!) {\n    layoutHistory(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetLayoutHistory($path: String!) {\n    layoutHistory(path: $path) {\n      id\n      path\n      revision\n      sections {\n        name\n        order\n        type\n        children\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
