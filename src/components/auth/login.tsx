@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { setUser } from '@/lib/auth';
-import { useFormState } from 'react-dom';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { setUser } from "@/lib/auth";
+import { useFormState } from "react-dom";
 
 async function loginUser(prevState: any, formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
   try {
-    const response = await fetch('http://localhost:3001/auth/login', {
-      method: 'POST',
+    const response = await fetch("http://localhost:3001/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
-      return { error: '로그인에 실패했습니다.' };
+      return { error: "로그인에 실패했습니다." };
     }
 
     const { accessToken, name, email: verifiedEmail } = await response.json();
@@ -33,30 +33,28 @@ async function loginUser(prevState: any, formData: FormData) {
         email: verifiedEmail,
         name: name,
       },
-      accessToken,
+      accessToken
     );
 
     // 대시보드로 리다이렉트
-    window.location.href = '/dashboard';
+    window.location.href = "/dashboard";
 
     return { success: true };
   } catch (error) {
-    return { error: '서버 오류가 발생했습니다.' };
+    return { error: "서버 오류가 발생했습니다." };
   }
 }
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   const [state, formAction] = useFormState(loginUser, null);
 
-  console.log(state);
-
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6 w-1/3", className)} {...props}>
       <Card className="overflow-hidden">
-        <CardContent className="grid p-0 md:grid-cols-2">
+        <CardContent>
           <form action={formAction} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               {state?.error && (

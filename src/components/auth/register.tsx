@@ -1,32 +1,33 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useFormState, useFormStatus } from 'react-dom';
-import { useState } from 'react';
-
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useFormState, useFormStatus } from "react-dom";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 async function registerUser(prevState: any, formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const confirmPassword = formData.get('confirmPassword') as string;
-  const name = formData.get('name') as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+  const name = formData.get("name") as string;
 
   if (password !== confirmPassword) {
-    return { error: '비밀번호가 일치하지 않습니다.' };
+    return { error: "비밀번호가 일치하지 않습니다." };
   }
 
   if (password.length < 8) {
-    return { error: '비밀번호는 8자 이상이어야 합니다.' };
+    return { error: "비밀번호는 8자 이상이어야 합니다." };
   }
 
   try {
-    const response = await fetch('http://localhost:3001/users', {
-      method: 'POST',
+    const response = await fetch("http://localhost:3001/users", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email,
@@ -36,12 +37,11 @@ async function registerUser(prevState: any, formData: FormData) {
     });
 
     if (!response.ok) {
-      return { error: '회원가입에 실패했습니다.' };
+      return { error: "회원가입에 실패했습니다." };
     }
-
     return { success: true };
   } catch (error) {
-    return { error: '서버 오류가 발생했습니다.' };
+    return { error: "서버 오류가 발생했습니다." };
   }
 }
 
@@ -50,7 +50,7 @@ function SubmitButton() {
 
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? '가입 중...' : '회원가입'}
+      {pending ? "가입 중..." : "회원가입"}
     </Button>
   );
 }
@@ -58,14 +58,25 @@ function SubmitButton() {
 export function RegisterForm({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   const [state, formAction] = useFormState(registerUser, null);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
 
+  useEffect(() => {
+    if (state?.success) {
+      toast({
+        title: "회원가입이 완료되었습니다.",
+        description: "로그인 페이지로 이동합니다.",
+      });
+      router.push("/auth/login");
+    }
+  }, [state?.success, router]);
+
   const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
     setConfirmPassword(value);
@@ -73,9 +84,9 @@ export function RegisterForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6 w-1/3", className)} {...props}>
       <Card className="overflow-hidden">
-        <CardContent className="grid p-0 md:grid-cols-2">
+        <CardContent>
           <form className="p-6 md:p-8" action={formAction}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
@@ -134,24 +145,17 @@ export function RegisterForm({
               )}
               <SubmitButton />
               <div className="text-center text-sm">
-                이미 계정이 있으신가요?{' '}
-                <a href="/login" className="underline underline-offset-4">
+                이미 계정이 있으신가요?{" "}
+                <a href="/auth/login" className="underline underline-offset-4">
                   로그인
                 </a>
               </div>
             </div>
           </form>
-          <div className="relative hidden bg-muted md:block">
-            <img
-              src="/placeholder.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        가입하기 버튼을 클릭하면 <a href="#">이용약관</a>과{' '}
+        가입하기 버튼을 클릭하면 <a href="#">이용약관</a>과{" "}
         <a href="#">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.
       </div>
     </div>

@@ -28,15 +28,22 @@ export const GET_LAYOUT_BY_PATH = gql(`
   query GetLayoutByPath($path: String!) {
     layoutByPath(path: $path) {
       id
-      path
-      revision
-      sections {
+      sections{
         name
         order
         type
-        children
+        widgets {
+          id
+          name
+          rules
+          props
+          style
+          type
+        }
       }
-    }
+      path
+      revision
+  }
   }
 `);
 
@@ -50,7 +57,14 @@ export const GET_LAYOUT_HISTORY = gql(`
         name
         order
         type
-        children
+        widgets {
+          id
+          name
+          type
+          rules
+          props
+          style
+        }
       }
     }
   }

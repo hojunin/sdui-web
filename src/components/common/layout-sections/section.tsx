@@ -2,14 +2,25 @@
 
 import { GetLayoutByPathQuery } from "@/lib/graphql/__generated__/graphql";
 import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
 import React, { forwardRef, useState } from "react";
+import { WidgetRenderer } from "../widgets/widget-renderer";
 
 interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   className?: string;
   section: GetLayoutByPathQuery["layoutByPath"]["sections"][number];
 }
+
+const chevronStyle = cva("w-6 h-6 transition-all duration-300", {
+  variants: {
+    isExpanded: {
+      true: "rotate-180",
+      false: "rotate-0",
+    },
+  },
+});
 
 const Section = forwardRef<HTMLDivElement, SectionProps>(
   ({ children, className, section, ...props }, ref) => {
@@ -26,18 +37,15 @@ const Section = forwardRef<HTMLDivElement, SectionProps>(
             onClick={() => setIsExpanded(!isExpanded)}
           >
             <h2 className="text-2xl font-semibold">{section.name}</h2>
-            <ChevronDownIcon
-              className={cn(
-                "w-6 h-6 transition-all duration-300",
-                isExpanded ? "rotate-180" : "rotate-0"
-              )}
-            />
+            <ChevronDownIcon className={chevronStyle({ isExpanded })} />
           </button>
         </div>
         <div
           className={cn("flex flex-col gap-4", isExpanded ? "block" : "hidden")}
         >
-          {section.type}
+          {section.widgets?.map((widget) => (
+            <WidgetRenderer key={widget.id} widget={widget} />
+          ))}
           {children}
         </div>
       </div>

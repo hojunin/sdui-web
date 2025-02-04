@@ -16,10 +16,12 @@ export type Scalars = {
   Float: { input: number; output: number; }
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: any; output: any; }
 };
 
 export type CreateLayoutInput = {
-  baseTemplateId?: InputMaybe<Scalars['ID']['input']>;
+  baseTemplateId?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isTemplate?: Scalars['Boolean']['input'];
   path: Scalars['String']['input'];
@@ -33,6 +35,16 @@ export type CreateMenuInput = {
   order: Scalars['Int']['input'];
   parentId?: InputMaybe<Scalars['Int']['input']>;
   path: Scalars['String']['input'];
+};
+
+export type CreateWidgetInput = {
+  children?: InputMaybe<Array<WidgetRelationInput>>;
+  layouts?: InputMaybe<Array<WidgetLayoutInput>>;
+  name: Scalars['String']['input'];
+  props?: InputMaybe<Scalars['JSON']['input']>;
+  rules?: InputMaybe<Scalars['JSON']['input']>;
+  style?: InputMaybe<Scalars['JSON']['input']>;
+  type: Scalars['String']['input'];
 };
 
 export type Layout = {
@@ -49,23 +61,25 @@ export type Layout = {
   templateDescription?: Maybe<Scalars['String']['output']>;
   templateName?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+  widgetRelations?: Maybe<Array<WidgetLayout>>;
 };
 
 export type LayoutSection = {
   __typename?: 'LayoutSection';
-  children: Array<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   order: Scalars['Float']['output'];
-  style?: Maybe<LayoutStyle>;
+  style?: Maybe<Scalars['JSON']['output']>;
   type: LayoutSectionType;
+  widgetTypes: Array<Scalars['String']['output']>;
+  widgets?: Maybe<Array<Widget>>;
 };
 
 export type LayoutSectionInput = {
-  children?: Array<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   order: Scalars['Float']['input'];
-  style?: InputMaybe<LayoutStyleInput>;
+  style?: InputMaybe<Scalars['JSON']['input']>;
   type: LayoutSectionType;
+  widgetTypes?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** The type of layout section */
@@ -74,23 +88,6 @@ export enum LayoutSectionType {
   Header = 'HEADER',
   Section = 'SECTION'
 }
-
-export type LayoutStyle = {
-  __typename?: 'LayoutStyle';
-  backgroundColor?: Maybe<Scalars['String']['output']>;
-  height?: Maybe<Scalars['String']['output']>;
-  margin?: Maybe<Scalars['String']['output']>;
-  padding?: Maybe<Scalars['String']['output']>;
-  width?: Maybe<Scalars['String']['output']>;
-};
-
-export type LayoutStyleInput = {
-  backgroundColor?: InputMaybe<Scalars['String']['input']>;
-  height?: InputMaybe<Scalars['String']['input']>;
-  margin?: InputMaybe<Scalars['String']['input']>;
-  padding?: InputMaybe<Scalars['String']['input']>;
-  width?: InputMaybe<Scalars['String']['input']>;
-};
 
 export type Menu = {
   __typename?: 'Menu';
@@ -110,10 +107,13 @@ export type Mutation = {
   __typename?: 'Mutation';
   createLayout: Layout;
   createMenu: Menu;
+  createWidget: Widget;
   removeLayout: Scalars['Boolean']['output'];
   removeMenu: Scalars['Boolean']['output'];
-  updateLayout: Layout;
+  removeWidget: Scalars['Boolean']['output'];
+  rollbackLayout: Layout;
   updateMenu: Menu;
+  updateWidget: Widget;
 };
 
 
@@ -127,6 +127,11 @@ export type MutationCreateMenuArgs = {
 };
 
 
+export type MutationCreateWidgetArgs = {
+  createWidgetInput: CreateWidgetInput;
+};
+
+
 export type MutationRemoveLayoutArgs = {
   id: Scalars['ID']['input'];
 };
@@ -137,8 +142,14 @@ export type MutationRemoveMenuArgs = {
 };
 
 
-export type MutationUpdateLayoutArgs = {
-  updateLayoutInput: UpdateLayoutInput;
+export type MutationRemoveWidgetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRollbackLayoutArgs = {
+  path: Scalars['String']['input'];
+  revision: Scalars['Float']['input'];
 };
 
 
@@ -146,14 +157,26 @@ export type MutationUpdateMenuArgs = {
   input: UpdateMenuInput;
 };
 
+
+export type MutationUpdateWidgetArgs = {
+  updateWidgetInput: UpdateWidgetInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   layout: Layout;
   layoutByPath: Layout;
   layoutHistory: Array<Layout>;
+  layoutTemplates: Array<Layout>;
   layouts: Array<Layout>;
   menu: Menu;
   menus: Array<Menu>;
+  previewLayout: Layout;
+  widget: Widget;
+  widgetHistory: Array<Widget>;
+  widgets: Array<Widget>;
+  widgetsByLayout: Array<Widget>;
+  widgetsByParent: Array<Widget>;
 };
 
 
@@ -176,15 +199,29 @@ export type QueryMenuArgs = {
   id: Scalars['Int']['input'];
 };
 
-export type UpdateLayoutInput = {
-  baseTemplateId?: InputMaybe<Scalars['ID']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
+
+export type QueryPreviewLayoutArgs = {
   id: Scalars['ID']['input'];
-  isTemplate?: InputMaybe<Scalars['Boolean']['input']>;
-  path?: InputMaybe<Scalars['String']['input']>;
-  sections?: InputMaybe<Array<LayoutSectionInput>>;
-  templateDescription?: InputMaybe<Scalars['String']['input']>;
-  templateName?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryWidgetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryWidgetHistoryArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryWidgetsByLayoutArgs = {
+  layoutId: Scalars['ID']['input'];
+};
+
+
+export type QueryWidgetsByParentArgs = {
+  parentId: Scalars['ID']['input'];
 };
 
 export type UpdateMenuInput = {
@@ -193,6 +230,70 @@ export type UpdateMenuInput = {
   order?: InputMaybe<Scalars['Int']['input']>;
   parentId?: InputMaybe<Scalars['Int']['input']>;
   path?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateWidgetInput = {
+  children?: InputMaybe<Array<WidgetRelationInput>>;
+  id: Scalars['ID']['input'];
+  layouts?: InputMaybe<Array<WidgetLayoutInput>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  props?: InputMaybe<Scalars['JSON']['input']>;
+  rules?: InputMaybe<Scalars['JSON']['input']>;
+  style?: InputMaybe<Scalars['JSON']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Widget = {
+  __typename?: 'Widget';
+  childRelations?: Maybe<Array<WidgetRelation>>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  layoutRelations?: Maybe<Array<WidgetLayout>>;
+  name: Scalars['String']['output'];
+  parentRelations?: Maybe<Array<WidgetRelation>>;
+  props?: Maybe<Scalars['JSON']['output']>;
+  revision: Scalars['Float']['output'];
+  rules?: Maybe<Scalars['JSON']['output']>;
+  style?: Maybe<Scalars['JSON']['output']>;
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type WidgetLayout = {
+  __typename?: 'WidgetLayout';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  layout?: Maybe<Layout>;
+  layoutId?: Maybe<Scalars['String']['output']>;
+  order?: Maybe<Scalars['Float']['output']>;
+  sectionName?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  widget: Widget;
+  widgetId: Scalars['String']['output'];
+};
+
+export type WidgetLayoutInput = {
+  layoutId: Scalars['String']['input'];
+  order: Scalars['Float']['input'];
+  sectionName: Scalars['String']['input'];
+};
+
+export type WidgetRelation = {
+  __typename?: 'WidgetRelation';
+  childWidget: Widget;
+  childWidgetId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  order: Scalars['Float']['output'];
+  parentWidget: Widget;
+  parentWidgetId: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type WidgetRelationInput = {
+  order: Scalars['Float']['input'];
+  widgetId: Scalars['String']['input'];
 };
 
 export type GetMenusQueryVariables = Exact<{ [key: string]: never; }>;
@@ -205,16 +306,16 @@ export type GetLayoutByPathQueryVariables = Exact<{
 }>;
 
 
-export type GetLayoutByPathQuery = { __typename?: 'Query', layoutByPath: { __typename?: 'Layout', id: string, path: string, revision: number, sections: Array<{ __typename?: 'LayoutSection', name: string, order: number, type: LayoutSectionType, children: Array<string> }> } };
+export type GetLayoutByPathQuery = { __typename?: 'Query', layoutByPath: { __typename?: 'Layout', id: string, path: string, revision: number, sections: Array<{ __typename?: 'LayoutSection', name: string, order: number, type: LayoutSectionType, widgets?: Array<{ __typename?: 'Widget', id: string, name: string, rules?: any | null, props?: any | null, style?: any | null, type: string }> | null }> } };
 
 export type GetLayoutHistoryQueryVariables = Exact<{
   path: Scalars['String']['input'];
 }>;
 
 
-export type GetLayoutHistoryQuery = { __typename?: 'Query', layoutHistory: Array<{ __typename?: 'Layout', id: string, path: string, revision: number, sections: Array<{ __typename?: 'LayoutSection', name: string, order: number, type: LayoutSectionType, children: Array<string> }> }> };
+export type GetLayoutHistoryQuery = { __typename?: 'Query', layoutHistory: Array<{ __typename?: 'Layout', id: string, path: string, revision: number, sections: Array<{ __typename?: 'LayoutSection', name: string, order: number, type: LayoutSectionType, widgets?: Array<{ __typename?: 'Widget', id: string, name: string, type: string, rules?: any | null, props?: any | null, style?: any | null }> | null }> }> };
 
 
 export const GetMenusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMenus"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"menus"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"depth"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"order"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetMenusQuery, GetMenusQueryVariables>;
-export const GetLayoutByPathDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLayoutByPath"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layoutByPath"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"revision"}},{"kind":"Field","name":{"kind":"Name","value":"sections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"children"}}]}}]}}]}}]} as unknown as DocumentNode<GetLayoutByPathQuery, GetLayoutByPathQueryVariables>;
-export const GetLayoutHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLayoutHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layoutHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"revision"}},{"kind":"Field","name":{"kind":"Name","value":"sections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"children"}}]}}]}}]}}]} as unknown as DocumentNode<GetLayoutHistoryQuery, GetLayoutHistoryQueryVariables>;
+export const GetLayoutByPathDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLayoutByPath"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layoutByPath"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"widgets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"rules"}},{"kind":"Field","name":{"kind":"Name","value":"props"}},{"kind":"Field","name":{"kind":"Name","value":"style"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"revision"}}]}}]}}]} as unknown as DocumentNode<GetLayoutByPathQuery, GetLayoutByPathQueryVariables>;
+export const GetLayoutHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLayoutHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layoutHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"revision"}},{"kind":"Field","name":{"kind":"Name","value":"sections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"widgets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"rules"}},{"kind":"Field","name":{"kind":"Name","value":"props"}},{"kind":"Field","name":{"kind":"Name","value":"style"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetLayoutHistoryQuery, GetLayoutHistoryQueryVariables>;

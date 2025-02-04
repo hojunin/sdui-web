@@ -1,0 +1,19 @@
+# Scratchpad
+
+## 현재 작업: json-rules-engine을 활용한 버튼 위젯 규칙 엔진 구현
+
+### 요구사항 분석
+- json-rules-engine 패키지를 사용하여 버튼 클릭 시 규칙 기반 동작 구현
+- 규칙에는 조건(conditions), 이벤트(event), 성공/실패 처리(onSuccess/onFailure) 포함
+- 버튼의 상태 변경 및 콜백 함수 실행 기능 필요
+
+### 구현 계획
+[X] 1. button-widget.rule-engine.ts 파일 생성 및 기본 구조 설정
+[X] 2. 규칙 엔진 인터페이스 정의
+[X] 3. 팩트(Facts) 타입 정의
+[X] 4. 이벤트 핸들러 구현
+[ ] 5. 규칙 실행 로직 구현
+
+### 다음 단계
+- 규칙 실행 로직 구현
+- 버튼 컴포넌트와 통합 
