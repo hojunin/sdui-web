@@ -7,18 +7,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { flexRender } from "@tanstack/react-table";
+import { flexRender, Table as TableInstance } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
 
-export function DataTable({
-  table,
-  loading,
-  style,
-}: {
-  table: any;
+interface DataTableProps<T> {
+  table: TableInstance<T>;
   loading: boolean;
-  style: any;
-}) {
+  style?: {
+    table?: React.CSSProperties;
+    header?: React.CSSProperties;
+    row?: React.CSSProperties;
+    cell?: React.CSSProperties;
+  };
+}
+
+export function DataTable<T>({ table, loading, style }: DataTableProps<T>) {
   if (loading) {
     return (
       <div className="w-full h-96 flex items-center justify-center">
@@ -63,9 +66,12 @@ export function DataTable({
             ))
           ) : (
             <TableRow>
-              {/* <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-24 text-center"
+              >
                 데이터가 없습니다.
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           )}
         </TableBody>

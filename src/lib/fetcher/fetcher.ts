@@ -25,12 +25,23 @@ type CacheOptions = {
 // NOTE: Exclude cache option from RequestInit as it will be passed through the separate cache options object
 type RequestOptions = Omit<RequestInit, "cache">;
 
-type FetcherOptions<O, R, D = R> = {
+export type ApiResponse<T> = {
+  data: T;
+  // API 응답에 공통적으로 포함될 수 있는 메타데이터
+  meta?: {
+    total?: number;
+    page?: number;
+    pageSize?: number;
+  };
+};
+
+// FetcherOptions 타입 개선
+type FetcherOptions<TParams, TResponse, TData = TResponse> = {
   method: Required<RequestOptions["method"]>;
-  url: string | ((options: O) => string);
-  requestOption?: RequestOptions | ((options: O) => RequestOptions);
+  url: string | ((options: TParams) => string);
+  requestOption?: RequestOptions | ((options: TParams) => RequestOptions);
   validator?: (data: unknown) => string[] | undefined;
-  transformer?: (data: R) => D;
+  transformer?: (data: TResponse) => TData;
   middlewares?: HttpMiddleware[];
   cache?: CacheOptions;
 };
@@ -86,22 +97,25 @@ export async function fetchAsResult<T>(
   }
 }
 
-export const createFetcher = <Options, ResponseType, DataType = ResponseType>({
+// createFetcher 함수 시그니처 개선
+export const createFetcher = <
+  TParams = void,
+  TResponse = unknown,
+  TData = TResponse,
+>({
   method,
   url: passedUrl,
   requestOption: passedRequestOption,
   validator = () => undefined,
-  transformer = (data) => data as unknown as DataType,
+  transformer = (data) => data as unknown as TData,
   middlewares = [],
   cache,
-}: FetcherOptions<Options, ResponseType, DataType>): Fetcher<
-  Options,
-  DataType,
+}: FetcherOptions<TParams, TResponse, TData>): Fetcher<
+  TParams,
+  TData,
   Error
 > => {
-  const fetcher = async (
-    options: Options
-  ): Promise<Result<DataType, Error>> => {
+  const fetcher = async (options: TParams): Promise<Result<TData, Error>> => {
     const url =
       typeof passedUrl === "function" ? passedUrl(options) : passedUrl;
     const requestOptions =
@@ -118,7 +132,7 @@ export const createFetcher = <Options, ResponseType, DataType = ResponseType>({
     });
 
     // fetch
-    const response = await fetchAsResult<ResponseType>(finalUrl, {
+    const response = await fetchAsResult<TResponse>(finalUrl, {
       ...finalRequestOptions,
       cache: cache?.policy,
       next: {
