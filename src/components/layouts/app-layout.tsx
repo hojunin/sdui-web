@@ -3,29 +3,15 @@
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { isAuthenticated } from "@/lib/auth";
 
 interface AppLayoutProps {
   children: React.ReactNode;
-  breadcrumbs?: {
-    items: Array<{
-      href?: string;
-      label: string;
-    }>;
-  };
 }
 
-export function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
+export function AppLayout({ children }: AppLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
@@ -42,28 +28,6 @@ export function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
           <div className="flex items-center gap-2 px-4 ">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            {breadcrumbs && (
-              <Breadcrumb>
-                <BreadcrumbList>
-                  {breadcrumbs.items.map((item, index) => (
-                    <Fragment key={item.label}>
-                      <BreadcrumbItem className="hidden md:block">
-                        {item.href ? (
-                          <BreadcrumbLink href={item.href}>
-                            {item.label}
-                          </BreadcrumbLink>
-                        ) : (
-                          <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                        )}
-                      </BreadcrumbItem>
-                      {index < breadcrumbs.items.length - 1 && (
-                        <BreadcrumbSeparator className="hidden md:block" />
-                      )}
-                    </Fragment>
-                  ))}
-                </BreadcrumbList>
-              </Breadcrumb>
-            )}
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

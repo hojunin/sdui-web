@@ -31,7 +31,6 @@ export class ButtonRuleEngine {
   private engine: Engine;
 
   constructor(rule?: any) {
-    console.log("🚀 ~ ButtonRuleEngine ~ constructor ~ rule:", rule);
     this.engine = new Engine();
     if (rule) {
       this.setupRules(rule);

@@ -1,13 +1,14 @@
 "use client";
 
-import { SectionRenderer } from "@/components/common/layout-sections/section-renderer";
 import { GET_LAYOUT_BY_PATH } from "@/lib/graphql/queries";
 import { useQuery } from "@apollo/client";
+import { Separator } from "@/components/ui/separator";
+import { SectionRenderer } from "@/components/common/layout-sections/section-renderer";
 
-export default function SalesDashboard() {
+export default function UsersDashboard() {
   const { data, loading, error } = useQuery(GET_LAYOUT_BY_PATH, {
     variables: {
-      path: "/dashboard/settlement",
+      path: "/dashboard/users",
     },
   });
 
@@ -16,6 +17,10 @@ export default function SalesDashboard() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
+      <h1 className="text-4xl font-semibold">Usage Dashboard</h1>
+
+      <Separator />
+
       {data?.layoutByPath.sections.map((section) => (
         <SectionRenderer key={section.name} section={section} />
       ))}

@@ -38,13 +38,11 @@ export type CreateMenuInput = {
 };
 
 export type CreateWidgetInput = {
-  children?: InputMaybe<Array<WidgetRelationInput>>;
-  layouts?: InputMaybe<Array<WidgetLayoutInput>>;
   name: Scalars['String']['input'];
   props?: InputMaybe<Scalars['JSON']['input']>;
   rules?: InputMaybe<Scalars['JSON']['input']>;
   style?: InputMaybe<Scalars['JSON']['input']>;
-  type: Scalars['String']['input'];
+  type: WidgetType;
 };
 
 export type Layout = {
@@ -70,7 +68,7 @@ export type LayoutSection = {
   order: Scalars['Float']['output'];
   style?: Maybe<Scalars['JSON']['output']>;
   type: LayoutSectionType;
-  widgetTypes: Array<Scalars['String']['output']>;
+  widgetNames: Array<Scalars['String']['output']>;
   widgets?: Maybe<Array<Widget>>;
 };
 
@@ -79,7 +77,7 @@ export type LayoutSectionInput = {
   order: Scalars['Float']['input'];
   style?: InputMaybe<Scalars['JSON']['input']>;
   type: LayoutSectionType;
-  widgetTypes?: InputMaybe<Array<Scalars['String']['input']>>;
+  widgetNames?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** The type of layout section */
@@ -175,8 +173,6 @@ export type Query = {
   widget: Widget;
   widgetHistory: Array<Widget>;
   widgets: Array<Widget>;
-  widgetsByLayout: Array<Widget>;
-  widgetsByParent: Array<Widget>;
 };
 
 
@@ -214,16 +210,6 @@ export type QueryWidgetHistoryArgs = {
   id: Scalars['ID']['input'];
 };
 
-
-export type QueryWidgetsByLayoutArgs = {
-  layoutId: Scalars['ID']['input'];
-};
-
-
-export type QueryWidgetsByParentArgs = {
-  parentId: Scalars['ID']['input'];
-};
-
 export type UpdateMenuInput = {
   id: Scalars['Int']['input'];
   label?: InputMaybe<Scalars['String']['input']>;
@@ -233,14 +219,12 @@ export type UpdateMenuInput = {
 };
 
 export type UpdateWidgetInput = {
-  children?: InputMaybe<Array<WidgetRelationInput>>;
   id: Scalars['ID']['input'];
-  layouts?: InputMaybe<Array<WidgetLayoutInput>>;
   name?: InputMaybe<Scalars['String']['input']>;
   props?: InputMaybe<Scalars['JSON']['input']>;
   rules?: InputMaybe<Scalars['JSON']['input']>;
   style?: InputMaybe<Scalars['JSON']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<WidgetType>;
 };
 
 export type Widget = {
@@ -273,12 +257,6 @@ export type WidgetLayout = {
   widgetId: Scalars['String']['output'];
 };
 
-export type WidgetLayoutInput = {
-  layoutId: Scalars['String']['input'];
-  order: Scalars['Float']['input'];
-  sectionName: Scalars['String']['input'];
-};
-
 export type WidgetRelation = {
   __typename?: 'WidgetRelation';
   childWidget: Widget;
@@ -291,10 +269,53 @@ export type WidgetRelation = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type WidgetRelationInput = {
-  order: Scalars['Float']['input'];
-  widgetId: Scalars['String']['input'];
-};
+/** The supported widget types */
+export enum WidgetType {
+  Accordion = 'ACCORDION',
+  Alert = 'ALERT',
+  AlertDialog = 'ALERT_DIALOG',
+  AspectRatio = 'ASPECT_RATIO',
+  Avatar = 'AVATAR',
+  Badge = 'BADGE',
+  Breadcrumb = 'BREADCRUMB',
+  Button = 'BUTTON',
+  Calendar = 'CALENDAR',
+  Card = 'CARD',
+  Carousel = 'CAROUSEL',
+  Checkbox = 'CHECKBOX',
+  Collapsible = 'COLLAPSIBLE',
+  Combobox = 'COMBOBOX',
+  Command = 'COMMAND',
+  ContextMenu = 'CONTEXT_MENU',
+  Custom = 'CUSTOM',
+  DataTable = 'DATA_TABLE',
+  DatePicker = 'DATE_PICKER',
+  Dialog = 'DIALOG',
+  Drawer = 'DRAWER',
+  DropdownMenu = 'DROPDOWN_MENU',
+  Form = 'FORM',
+  HoverCard = 'HOVER_CARD',
+  Input = 'INPUT',
+  Label = 'LABEL',
+  Menubar = 'MENUBAR',
+  NavigationMenu = 'NAVIGATION_MENU',
+  Popover = 'POPOVER',
+  Progress = 'PROGRESS',
+  RadioGroup = 'RADIO_GROUP',
+  ScrollArea = 'SCROLL_AREA',
+  Select = 'SELECT',
+  Separator = 'SEPARATOR',
+  Sheet = 'SHEET',
+  Skeleton = 'SKELETON',
+  Slider = 'SLIDER',
+  Switch = 'SWITCH',
+  Table = 'TABLE',
+  Tabs = 'TABS',
+  Textarea = 'TEXTAREA',
+  Toast = 'TOAST',
+  Toggle = 'TOGGLE',
+  Tooltip = 'TOOLTIP'
+}
 
 export type GetMenusQueryVariables = Exact<{ [key: string]: never; }>;
 

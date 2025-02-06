@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
 import React, { forwardRef, useState } from "react";
-import { WidgetRenderer } from "../widgets/widget-renderer";
+import { WidgetRenderer } from "@/components/common/widgets/widget-renderer";
 
 interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
