@@ -69,3 +69,17 @@ export const GET_LAYOUT_HISTORY = gql(`
     }
   }
 `);
+
+export const GET_WIDGETS = gql(`
+  query GetWidgets {
+    widgets {
+      id
+      name
+      type
+      rules
+      props
+      style
+      revision
+    }
+  }
+`);

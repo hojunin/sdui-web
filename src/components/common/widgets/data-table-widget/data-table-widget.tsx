@@ -16,6 +16,7 @@ import { DataTable } from "./data-table";
 import { DataTablePagination } from "./data-table-pagination";
 import { Widget } from "@/lib/graphql/__generated__/graphql";
 import { Switch } from "@/components/ui/switch";
+import { formatComplexValue, FormatOptions } from "@/lib/utils/data-formatter";
 
 // 컬럼 타입 정의
 export type DataTableColumnType =
@@ -33,7 +34,10 @@ export type DataTableColumn<T> = {
   type: DataTableColumnType;
   format?: {
     type?: string;
-    options?: Record<string, any>;
+    options?: FormatOptions & {
+      currency?: string;
+      renderer?: (value: any, row: T) => React.ReactNode;
+    };
   };
 };
 
@@ -145,13 +149,13 @@ export function DataTableWidget<T>({
               );
 
             case "custom":
-              // 커스텀 렌더러가 있는 경우
               return (
-                column.format?.options?.renderer?.(value, row.original) || value
+                column.format?.options?.renderer?.(value, row.original) ||
+                formatComplexValue(value, column.format?.options)
               );
 
             default:
-              return value;
+              return formatComplexValue(value, column.format?.options);
           }
         },
         enableSorting: props.table.features.sort,

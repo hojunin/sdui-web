@@ -1,4 +1,4 @@
-import { Widget } from "@/lib/graphql/__generated__/graphql";
+import { Widget, WidgetType } from "@/lib/graphql/__generated__/graphql";
 import React from "react";
 import { ButtonWidget } from "./button-widget/button-widget";
 import { BreadcrumbWidget } from "./breadcrumb-widget/breadcrumb-widget";
@@ -10,11 +10,11 @@ interface Props {
 
 export const WidgetRenderer = ({ widget }: Props) => {
   switch (widget.type) {
-    case "BUTTON":
+    case WidgetType.Button:
       return <ButtonWidget widget={widget} />;
-    case "BREADCRUMB":
+    case WidgetType.Breadcrumb:
       return <BreadcrumbWidget widget={widget} />;
-    case "DATA_TABLE":
+    case WidgetType.DataTable:
       return <DataTableWidget widget={widget} />;
     default:
       return null;

@@ -24,7 +24,7 @@ const chevronStyle = cva("w-6 h-6 transition-all duration-300", {
 
 const Section = forwardRef<HTMLDivElement, SectionProps>(
   ({ children, className, section, ...props }, ref) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
     return (
       <div
         className={cn("flex flex-col gap-4", className)}
