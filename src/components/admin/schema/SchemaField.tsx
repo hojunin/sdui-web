@@ -529,7 +529,7 @@ export function SchemaFieldComponent({
                           <FormLabel>값</FormLabel>
                           <FormControl>
                             <Input
-                              value={validation.value || ''}
+                              value={String(validation.value || '')}
                               onChange={(e) => updateStringValidation(index, { value: e.target.value })}
                               placeholder="검증에 사용할 값"
                             />
