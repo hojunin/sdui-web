@@ -83,3 +83,75 @@ export const GET_WIDGETS = gql(`
     }
   }
 `);
+
+export const GET_PRODUCT_SEARCH_FORM = gql(`
+  query GetProductSearchForm($name: String!) {
+    formValidationSchemaByName(name: $name) {
+      id
+      name
+      description
+      revision
+      isActive
+      isPublished
+      zodSchema
+      formConfig
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const GET_FORM_VALIDATION_SCHEMAS = gql(`
+  query GetFormValidationSchemas {
+    formValidationSchemas {
+      id
+      name
+      description
+      revision
+      isActive
+      isPublished
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const GET_FORM_VALIDATION_SCHEMA = gql(`
+  query GetFormValidationSchema($id: ID!) {
+    formValidationSchema(id: $id) {
+      id
+      name
+      description
+      revision
+      isActive
+      isPublished
+      zodSchema
+      formConfig
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const CREATE_FORM_VALIDATION_SCHEMA = gql(`
+  mutation CreateFormValidationSchema($input: CreateFormValidationSchemaInput!) {
+    createFormValidationSchema(input: $input) {
+      id
+      name
+      description
+      revision
+      isActive
+      isPublished
+      zodSchema
+      formConfig
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const DELETE_FORM_VALIDATION_SCHEMA = gql(`
+  mutation DeleteFormValidationSchema($id: ID!) {
+    deleteFormValidationSchema(id: $id)
+  }
+`);
